@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <limits>
+#include <ctime>
 using namespace std;
 
 struct Service {
@@ -45,6 +47,35 @@ struct Patient {
 
 Patient* head = nullptr;
 
+// ---------------------------------------------------------------------
+// Helper: safely reads an integer from cin within [minVal, maxVal].
+// Clears cin's fail state and discards bad input so the program never
+// spins in an unbehaved infinite loop on non-numeric input.
+// ---------------------------------------------------------------------
+int getValidInt(const string& prompt, int minVal, int maxVal) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+        if (cin.fail()) {
+            cin.clear();                                          // reset error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');  // discard bad input
+            cout << "Invalid input. Please enter a whole number.\n";
+            continue;
+        }
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');      // discard trailing junk on the line
+
+        if (value < minVal || value > maxVal) {
+            cout << "Please enter a value between " << minVal << " and " << maxVal << ".\n";
+            continue;
+        }
+
+        return value;
+    }
+}
+
 int dentistIndexFromId(int id){
     for (int i = 0; i < 5; i++) {
         if (dentists[i].id == id) return i;
@@ -76,14 +107,12 @@ void insertPatientNode(Patient* newPatient){
 }
 
 void insertPatients(){
-    int count;
+    int count = getValidInt("How many patients do you want to insert? ", 1, 100);
 
-    cout << "How many patients do you want to insert? "; cin >> count;
-
-    int nextId = 1; 
+    int nextId = 1;
 
     for (int i = 0; i < count; i++) {
-        cout << "\n--- Patient #" <<(i + 1)<< " ---\n";
+        cout << "\n--- Patient #" << (i + 1) << " ---\n";
 
         Patient* p = new Patient();
 
@@ -96,36 +125,34 @@ void insertPatients(){
 
         cout << "Assigned Patient ID: " << p->patientId << "\n";
 
-        cout << "Enter Patient Name: ";cin.ignore();getline(cin, p->name);
+        cout << "Enter Patient Name: ";
+        getline(cin, p->name);
 
-        cout << "Enter Patient Age: ";cin >> p->age;cin.ignore();
+        p->age = getValidInt("Enter Patient Age: ", 0, 130);
 
-        cout << "Enter Patient Email (press Enter to skip): ";getline(cin, p->email);
+        cout << "Enter Patient Email (press Enter to skip): ";
+        getline(cin, p->email);
 
-        cout << "Enter Patient Phone Number: ";getline(cin, p->phone);
+        cout << "Enter Patient Phone Number: ";
+        getline(cin, p->phone);
 
-        cout << "Enter Start Date (e.g. 2026-09-15): ";getline(cin, p->startDate);
+        cout << "Enter Start Date (e.g. 2026-09-15): ";
+        getline(cin, p->startDate);
 
         cout << "\nAvailable Services:\n";
         for (int j = 0; j < 5; j++) {
             cout << "  " << (j + 1) << ". " << services[j].name << " - $" << services[j].price << "\n";
         }
 
-        int choice;
-        
-        while (true) {
-            cout << "Choose a service (1-5): ";cin >> choice;
-            if (choice >= 1 && choice <= 5) break;
-            cout << "Invalid choice, try again.\n";
-        }
+        int choice = getValidInt("Choose a service (1-5): ", 1, 5);
         p->serviceIndex = choice - 1;
 
-        p->dentistId = dentists[choice-1].id;
-        dentists[choice-1].appointmentPatientId[dentists[choice-1].patientCount] = p->patientId;
-        dentists[choice-1].patientCount++;
+        p->dentistId = dentists[choice - 1].id;
+        dentists[choice - 1].appointmentPatientId[dentists[choice - 1].patientCount] = p->patientId;
+        dentists[choice - 1].patientCount++;
         insertPatientNode(p);
 
-        cout << "\nPatient added successfully! Assigned to " << dentists[choice-1].name
+        cout << "\nPatient added successfully! Assigned to " << dentists[choice - 1].name
              << " for " << services[p->serviceIndex].name << ".\n";
     }
 }
@@ -177,9 +204,7 @@ void dischargePatient() {
         return;
     }
 
-    int id;
-
-    cout << "Enter Patient ID to discharge (after checkup): ";cin >> id;
+    int id = getValidInt("Enter Patient ID to discharge (after checkup): ", 1, 1000000);
 
     Patient* current = head;
     Patient* prev = nullptr;
