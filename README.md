@@ -1,6 +1,6 @@
 A simple **C++ console-based Dental Clinic Management System** for managing patients, dentists, services, and appointments.
 
-## ✨ Features
+##  Features
 
 * Add and register patients
 * Automatically assign patient IDs
@@ -11,7 +11,7 @@ A simple **C++ console-based Dental Clinic Management System** for managing pati
 * Display service prices
 * Track dentist workload
 
-## 🧱 C++ Concepts
+## C++ Concepts
 
 This project demonstrates:
 
@@ -28,7 +28,7 @@ Patients are stored dynamically using a linked list:
 [Patient 1] → [Patient 2] → [Patient 3] → nullptr
 ```
 
-## 🦷 Services
+## Services
 
 | Service          | Price |
 | ---------------- | ----: |
@@ -38,7 +38,7 @@ Patients are stored dynamically using a linked list:
 | Tooth Extraction |  $100 |
 | Teeth Whitening  |  $150 |
 
-## ⚙️ Run the Project
+## Run the Project
 
 Compile with a C++ compiler:
 
@@ -58,7 +58,7 @@ On Windows:
 dental_clinic.exe
 ```
 
-## 👨‍💻 Author
+## Author
 
 Team2, Next Gen Program
 CADT — Cambodia Academy of Digital Technology
